@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sphotik Quote Studio — উক্তি কার্ড জেনারেটর</title>
+  <link rel="icon" href="./logo.png" />
+  <!-- Google Fonts Fallback + Additional Bengali Weights -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    @font-face {
+      font-family: 'SphotikFraunces';
+      src: url('./fonts/fraunces-latin-normal.woff2') format('woff2');
+      font-weight: 400 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'SphotikNotoBengali';
+      src: url('./fonts/noto-serif-bengali-400-normal.woff2') format('woff2');
+      font-weight: 400 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --forest: #154131;
+      --forest-dark: #0e2c21;
+      --amber: #e07a16;
+      --gold: #f5c451;
+      --bg: #f4f5f4;
+      --card: #ffffff;
+      --border: #dde2df;
+      --text: #111614;
+      --muted: #5c6661;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Serif Bengali', 'SphotikNotoBengali', 'Fraunces', serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Header */
+    header {
+      background: var(--forest);
+      color: #fff;
+      padding: 0.9rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      background: #fff;
+      padding: 3px;
+    }
+
+    .brand-title {
+      font-family: 'Fraunces', 'SphotikFraunces', serif;
+      font-size: 1.35rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      opacity: 0.75;
+      font-family: 'Hind Siliguri', sans-serif;
+    }
+
+    /* Workspace Layout */
+    .workspace {
+      max-width: 1360px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.75rem;
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 2rem;
+      align-items: start;
+      flex: 1;
+    }
+
+    @media (max-width: 980px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Controls Panel */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(17, 22, 20, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .panel-section-title {
+      font-size: 0.8rem;
+      font-family: 'Hind Siliguri', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--forest);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    label {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #26302b;
+      font-family: 'Hind Siliguri', sans-serif;
+    }
+
+    textarea,
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Noto Serif Bengali', 'SphotikNotoBengali', serif;
+      font-size: 0.96rem;
+      color: var(--text);
+      background: #fafbfa;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    textarea:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--forest);
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 115px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    /* Option Pills */
+    .pill-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .pill-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .pill-btn {
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--border);
+      background: #fafbfa;
+      border-radius: 8px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .pill-btn:hover {
+      border-color: var(--forest);
+    }
+
+    .pill-btn.active {
+      background: var(--forest);
+      color: #fff;
+      border-color: var(--forest);
+    }
+
+    .color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.2);
+      display: inline-block;
+    }
+
+    /* Photo Upload Box */
+    .upload-box {
+      border: 1.5px dashed #b5c2bc;
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      background: #f8faf9;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .upload-box:hover {
+      border-color: var(--forest);
+      background: #f1f6f3;
+    }
+
+    .upload-box input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-label {
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 0.88rem;
+      color: var(--forest);
+      font-weight: 600;
+    }
+
+    .upload-hint {
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Sliders */
+    .slider-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .slider-group span {
+      font-size: 0.78rem;
+      font-family: 'Hind Siliguri', sans-serif;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input[type="range"] {
+      accent-color: var(--forest);
+      width: 100%;
+      cursor: pointer;
+    }
+
+    /* Action Buttons */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 0.25rem;
+    }
+
+    .btn-download {
+      background: var(--forest);
+      color: #fff;
+      border: none;
+      padding: 0.95rem 1.25rem;
+      border-radius: 10px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 6px 18px rgba(21, 65, 49, 0.22);
+    }
+
+    .btn-download:hover {
+      background: var(--forest-dark);
+    }
+
+    .btn-download:active {
+      transform: scale(0.99);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.55rem;
+      border-radius: 8px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      color: var(--text);
+      border-color: #999;
+    }
+
+    /* Right Preview Area */
+    .preview-stage {
+      background: #e7ece9;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 660px;
+      position: sticky;
+      top: 1.5rem;
+    }
+
+    .preview-toolbar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .canvas-wrap {
+      max-width: 560px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+      background: #154131;
+      display: block;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.25rem;
+    }
+
+    .preset-chip {
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 99px;
+      background: #eef2f0;
+      color: var(--forest);
+      border: 1px solid #d0dcd6;
+      cursor: pointer;
+    }
+
+    .preset-chip:hover {
+      background: #dfeae4;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <img id="headerLogo" src="./logo-light.png" alt="Sphotik Logo" />
+      <div>
+        <div class="brand-title">Sphotik Quote Studio</div>
+        <div class="brand-sub">সোশ্যাল মিডিয়া উক্তি ও লেখক কার্ড জেনারেটর</div>
+      </div>
+    </div>
+    <div class="brand-sub">High-Res JPEG (1080p / 2160p)</div>
+  </header>
+
+  <main class="workspace">
+    <!-- Left Controls -->
+    <section class="panel">
+      <div>
+        <div class="panel-section-title">
+          <span>১. উক্তি ও লেখকের তথ্য</span>
+        </div>
+
+        <div class="field">
+          <label for="quoteInput">লেখকের উক্তি (Quote)</label>
+          <textarea id="quoteInput">বই কিনে কেউ কখনো দেউলিয়া হয় না।</textarea>
+          <div class="preset-chips">
+            <button type="button" class="preset-chip" data-quote="বই কিনে কেউ কখনো দেউলিয়া হয় না।" data-author="সৈয়দ মুজতবা আলী" data-book="বই কেনা">সৈয়দ মুজতবা আলী</button>
+            <button type="button" class="preset-chip" data-quote="মানুষের পুরো জীবনটা হচ্ছে একটা সরল অঙ্কের মতো। যতই দিন যাচ্ছে, ততই আমরা তার সমাধানের দিকে এগিয়ে যাচ্ছি।" data-author="হুমায়ূন আহমেদ" data-book="কথাশিল্পী">হুমায়ূন আহমেদ</button>
+            <button type="button" class="preset-chip" data-quote="বিপদে মোরে রক্ষা করো এ নহে মোর প্রার্থনা, বিপদে আমি না যেন করি ভয়।" data-author="রবীন্দ্রনাথ ঠাকুর" data-book="গীতাঞ্জলি">রবীন্দ্রনাথ ঠাকুর</button>
+          </div>
+        </div>
+
+        <div class="slider-row" style="margin-top: 0.75rem;">
+          <div class="field">
+            <label for="authorInput">লেখকের নাম</label>
+            <input type="text" id="authorInput" value="সৈয়দ মুজতবা আলী" placeholder="যেমন: হুমায়ূন আহমেদ" />
+          </div>
+          <div class="field">
+            <label for="bookInput">বইয়ের নাম / পরিচয় (ঐচ্ছিক)</label>
+            <input type="text" id="bookInput" value="বই কেনা" placeholder="যেমন: দেয়াল / কথাসাহিত্যিক" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Author Image Upload -->
+      <div>
+        <div class="panel-section-title">
+          <span>২. লেখকের ছবি (Author Portrait)</span>
+          <button type="button" id="clearPhotoBtn" class="btn-secondary" style="padding: 0.15rem 0.5rem; font-size: 0.74rem;">ছবি সরান</button>
+        </div>
+        <div class="upload-box">
+          <input type="file" id="photoInput" accept="image/*" />
+          <div class="upload-label">📸 লেখকের ছবি আপলোড করুন (Click or Drag)</div>
+          <div class="upload-hint">JPG, PNG বা WebP — অটোমেটিক ফ্রেম ও ক্রপ হবে</div>
+        </div>
+
+        <div class="slider-row" style="margin-top: 0.75rem;">
+          <div class="slider-group">
+            <span>ছবির জুম (Zoom) <strong id="zoomVal">1.0x</strong></span>
+            <input type="range" id="photoZoom" min="1" max="2.5" step="0.05" value="1" />
+          </div>
+          <div class="slider-group">
+            <span>ছবির ফিল্টার (Filter)</span>
+            <div class="pill-grid">
+              <button type="button" class="pill-btn active" data-filter="bw">B&W ক্লাসিক</button>
+              <button type="button" class="pill-btn" data-filter="color">রঙিন (Color)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-row" style="margin-top: 0.5rem;">
+          <div class="slider-group">
+            <span>ডানে-বামে (Pan X)</span>
+            <input type="range" id="photoPanX" min="-100" max="100" step="1" value="0" />
+          </div>
+          <div class="slider-group">
+            <span>উপরে-নিচে (Pan Y)</span>
+            <input type="range" id="photoPanY" min="-100" max="100" step="1" value="0" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme & Layout -->
+      <div>
+        <div class="panel-section-title">
+          <span>৩. ডিজাইন, থিম ও সাইজ</span>
+        </div>
+
+        <div class="field">
+          <label>কালার থিম (Sphotik Brand Themes)</label>
+          <div class="pill-grid">
+            <button type="button" class="pill-btn active" data-theme="forest">
+              <span class="color-dot" style="background:#154131;"></span> Sphotik Forest
+            </button>
+            <button type="button" class="pill-btn" data-theme="paper">
+              <span class="color-dot" style="background:#f6f3eb;"></span> Vintage Paper
+            </button>
+            <button type="button" class="pill-btn" data-theme="midnight">
+              <span class="color-dot" style="background:#0d1713;"></span> Deep Ink
+            </button>
+            <button type="button" class="pill-btn" data-theme="white">
+              <span class="color-dot" style="background:#ffffff;"></span> Crisp White
+            </button>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 0.75rem;">
+          <label>কার্ড লেআউট (Layout Style)</label>
+          <div class="pill-grid-3">
+            <button type="button" class="pill-btn active" data-layout="editorial">Editorial</button>
+            <button type="button" class="pill-btn" data-layout="centerpiece">Center Portrait</button>
+            <button type="button" class="pill-btn" data-layout="magazine">Split Frame</button>
+          </div>
+        </div>
+
+        <div class="slider-row" style="margin-top: 0.75rem;">
+          <div class="slider-group">
+            <span>উক্তির ফন্ট সাইজ <strong id="fontSizeVal">54px</strong></span>
+            <input type="range" id="fontSizeInput" min="32" max="82" step="2" value="54" />
+          </div>
+          <div class="slider-group">
+            <span>কার্ডের অনুপাত (Ratio)</span>
+            <div class="pill-grid">
+              <button type="button" class="pill-btn active" data-ratio="square">1:1 Square</button>
+              <button type="button" class="pill-btn" data-ratio="portrait">4:5 Portrait</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download CTA -->
+      <div class="actions">
+        <button type="button" id="downloadJpgBtn" class="btn-download">
+          <span>⬇️ High-Quality JPG ডাউনলোড করুন</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Right Live Canvas Preview -->
+    <section class="preview-stage">
+      <div class="preview-toolbar">
+        <span>লাইভ প্রিভিউ (সোশ্যাল মিডিয়া রেডি)</span>
+        <span id="dimensionsLabel">1080 × 1080 px • JPG (Ultra Quality)</span>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="quoteCanvas" width="1080" height="1080"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <script src="./logos.js"></script>
+  <script>
+    const canvas = document.getElementById('quoteCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // State
+    const state = {
+      quote: document.getElementById('quoteInput').value,
+      author: document.getElementById('authorInput').value,
+      book: document.getElementById('bookInput').value,
+      theme: 'forest',
+      layout: 'editorial',
+      ratio: 'square', // 'square' (1080x1080) or 'portrait' (1080x1350)
+      fontSize: 54,
+      photoFilter: 'bw',
+      photoZoom: 1,
+      photoPanX: 0,
+      photoPanY: 0,
+      authorImage: null,
+    };
+
+    // Preload Sphotik Logos from Base64 (no CORS taint issues ever!)
+    const logoDarkImg = new Image();
+    const logoLightImg = new Image();
+    if (window.SPHOTIK_LOGOS) {
+      logoDarkImg.src = window.SPHOTIK_LOGOS.dark;
+      logoLightImg.src = window.SPHOTIK_LOGOS.light;
+      document.getElementById('headerLogo').src = window.SPHOTIK_LOGOS.dark;
+    } else {
+      logoDarkImg.src = './logo.png';
+      logoLightImg.src = './logo-light.png';
+    }
+    logoDarkImg.onload = () => renderCard();
+    logoLightImg.onload = () => renderCard();
+
+    // Theme palettes matching Sphotik's design system
+    const THEMES = {
+      forest: {
+        bg: '#154131',
+        bgGrad: '#0e2f23',
+        text: '#ffffff',
+        muted: 'rgba(255, 255, 255, 0.72)',
+        accent: '#f5c451',
+        border: 'rgba(255, 255, 255, 0.16)',
+        cardInner: 'rgba(255, 255, 255, 0.04)',
+        logoType: 'dark', // white glyph on dark green
+        wordmarkColor: '#ffffff',
+      },
+      paper: {
+        bg: '#f6f3eb',
+        bgGrad: '#ede8da',
+        text: '#14261f',
+        muted: '#57655e',
+        accent: '#154131',
+        border: 'rgba(21, 65, 49, 0.18)',
+        cardInner: 'rgba(21, 65, 49, 0.03)',
+        logoType: 'light', // green glyph
+        wordmarkColor: '#154131',
+      },
+      midnight: {
+        bg: '#0c1612',
+        bgGrad: '#070d0b',
+        text: '#f3f6f4',
+        muted: 'rgba(243, 246, 244, 0.65)',
+        accent: '#e07a16',
+        border: 'rgba(255, 255, 255, 0.12)',
+        cardInner: 'rgba(255, 255, 255, 0.03)',
+        logoType: 'dark',
+        wordmarkColor: '#ffffff',
+      },
+      white: {
+        bg: '#ffffff',
+        bgGrad: '#f4f6f5',
+        text: '#111111',
+        muted: '#555555',
+        accent: '#154131',
+        border: '#dfeae4',
+        cardInner: '#f8faf9',
+        logoType: 'light',
+        wordmarkColor: '#154131',
+      },
+    };
+
+    // Helper: Wrap Bengali & English text cleanly
+    function wrapText(context, text, maxWidth) {
+      const paragraphs = text.split('\n');
+      const lines = [];
+      for (const para of paragraphs) {
+        const words = para.trim().split(/\s+/);
+        if (words.length === 0 || words[0] === '') {
+          lines.push('');
+          continue;
+        }
+        let currentLine = words[0];
+        for (let i = 1; i < words.length; i++) {
+          const word = words[i];
+          const width = context.measureText(currentLine + ' ' + word).width;
+          if (width < maxWidth) {
+            currentLine += ' ' + word;
+          } else {
+            lines.push(currentLine);
+            currentLine = word;
+          }
+        }
+        lines.push(currentLine);
+      }
+      return lines;
+    }
+
+    // Helper: Draw circular or rounded portrait with zoom, pan & B&W filter
+    function drawAuthorPortrait(x, y, size, radius, themeObj) {
+      ctx.save();
+
+      // Outer decorative ring
+      ctx.beginPath();
+      ctx.roundRect(x - 6, y - 6, size + 12, size + 12, radius + 4);
+      ctx.strokeStyle = themeObj.accent;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Clip path
+      ctx.beginPath();
+      ctx.roundRect(x, y, size, size, radius);
+      ctx.clip();
+
+      // Background inside portrait frame
+      ctx.fillStyle = themeObj.border;
+      ctx.fillRect(x, y, size, size);
+
+      if (state.authorImage) {
+        if (state.photoFilter === 'bw') {
+          ctx.filter = 'grayscale(100%) contrast(1.08)';
+        } else {
+          ctx.filter = 'none';
+        }
+
+        const img = state.authorImage;
+        const imgAspect = img.width / img.height;
+        let drawW = size * state.photoZoom;
+        let drawH = size * state.photoZoom;
+
+        if (imgAspect > 1) {
+          drawW = drawH * imgAspect;
+        } else {
+          drawH = drawW / imgAspect;
+        }
+
+        const offsetX = x + (size - drawW) / 2 + (state.photoPanX / 100) * (size * 0.5);
+        const offsetY = y + (size - drawH) / 2 + (state.photoPanY / 100) * (size * 0.5);
+
+        ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+        ctx.filter = 'none';
+      } else {
+        // Elegant Author Initials / Silhouette Placeholder
+        ctx.fillStyle = themeObj.cardInner;
+        ctx.fillRect(x, y, size, size);
+        ctx.fillStyle = themeObj.accent;
+        ctx.font = `600 ${Math.round(size * 0.38)}px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const initial = (state.author || 'স').trim().charAt(0);
+        ctx.fillText(initial, x + size / 2, y + size / 2 + 4);
+      }
+
+      ctx.restore();
+    }
+
+    // Helper: Draw Sphotik Footer / Branding
+    function drawSphotikBrand(x, y, align, themeObj) {
+      ctx.save();
+      const logoSize = 44;
+      const logoImg = themeObj.logoType === 'dark' ? logoDarkImg : logoLightImg;
+
+      if (align === 'center') {
+        const totalWidth = 210;
+        const startX = x - totalWidth / 2;
+        if (logoImg.complete && logoImg.naturalWidth > 0) {
+          ctx.drawImage(logoImg, startX, y - logoSize / 2, logoSize, logoSize);
+        }
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = themeObj.wordmarkColor;
+        ctx.font = `600 32px "Fraunces", "SphotikFraunces", serif`;
+        ctx.fillText('SPHOTIK', startX + logoSize + 14, y - 4);
+
+        ctx.fillStyle = themeObj.muted;
+        ctx.font = `400 15px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+        ctx.fillText('সদস্যভিত্তিক লাইব্রেরি · বাংলাদেশ', startX + logoSize + 14, y + 18);
+      } else {
+        // Left aligned brand + Right aligned website
+        if (logoImg.complete && logoImg.naturalWidth > 0) {
+          ctx.drawImage(logoImg, x, y - logoSize / 2, logoSize, logoSize);
+        }
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = themeObj.wordmarkColor;
+        ctx.font = `600 30px "Fraunces", "SphotikFraunces", serif`;
+        ctx.fillText('SPHOTIK', x + logoSize + 14, y - 4);
+
+        ctx.fillStyle = themeObj.muted;
+        ctx.font = `400 15px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+        ctx.fillText('সদস্যভিত্তিক লাইব্রেরি · বাংলাদেশ', x + logoSize + 14, y + 18);
+
+        // Right pill: sphotik.com
+        ctx.textAlign = 'right';
+        ctx.fillStyle = themeObj.muted;
+        ctx.font = `500 20px "Fraunces", "SphotikFraunces", serif`;
+        ctx.fillText('sphotik.com', canvas.width - x, y + 4);
+      }
+      ctx.restore();
+    }
+
+    // Main Render Function
+    function renderCard() {
+      const W = 1080;
+      const H = state.ratio === 'portrait' ? 1350 : 1080;
+      if (canvas.width !== W || canvas.height !== H) {
+        canvas.width = W;
+        canvas.height = H;
+        document.getElementById('dimensionsLabel').textContent = `${W} × ${H} px • JPG (Ultra Quality)`;
+      }
+
+      const t = THEMES[state.theme];
+
+      // 1. Background Gradient
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, t.bg);
+      grad.addColorStop(1, t.bgGrad);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Subtle ambient radial glow
+      const rad = ctx.createRadialGradient(W * 0.85, H * 0.12, 20, W * 0.85, H * 0.12, W * 0.55);
+      rad.addColorStop(0, state.theme === 'forest' || state.theme === 'midnight' ? 'rgba(245, 196, 81, 0.08)' : 'rgba(21, 65, 49, 0.05)');
+      rad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = rad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Outer editorial border frame
+      const pad = 54;
+      ctx.strokeStyle = t.border;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(pad, pad, W - pad * 2, H - pad * 2);
+
+      // Render based on selected Layout
+      if (state.layout === 'editorial') {
+        renderEditorialLayout(W, H, pad, t);
+      } else if (state.layout === 'centerpiece') {
+        renderCenterpieceLayout(W, H, pad, t);
+      } else {
+        renderMagazineLayout(W, H, pad, t);
+      }
+    }
+
+    // LAYOUT 1: Classic Editorial (Quote top/center, Author badge bottom-left, Sphotik footer)
+    function renderEditorialLayout(W, H, pad, t) {
+      const innerX = pad + 64;
+      const maxTextW = W - innerX * 2;
+
+      // Decorative Quote Mark
+      ctx.save();
+      ctx.fillStyle = t.accent;
+      ctx.font = `italic 600 150px "Fraunces", Georgia, serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.globalAlpha = 0.85;
+      ctx.fillText('“', innerX - 12, pad + 56);
+      ctx.restore();
+
+      // Quote Text
+      ctx.save();
+      ctx.fillStyle = t.text;
+      ctx.font = `500 ${state.fontSize}px "Noto Serif Bengali", "SphotikNotoBengali", "Fraunces", serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+
+      const lines = wrapText(ctx, state.quote, maxTextW);
+      const lineHeight = Math.round(state.fontSize * 1.52);
+      const totalQuoteH = lines.length * lineHeight;
+
+      // Vertically center quote in upper area
+      const availableTop = pad + 175;
+      const availableBottom = H - pad - 310;
+      let startY = availableTop + Math.max(0, (availableBottom - availableTop - totalQuoteH) / 2);
+
+      for (const line of lines) {
+        ctx.fillText(line, innerX, startY);
+        startY += lineHeight;
+      }
+      ctx.restore();
+
+      // Author Row above footer
+      const authorBlockY = H - pad - 255;
+      const portraitSize = 112;
+      drawAuthorPortrait(innerX, authorBlockY, portraitSize, portraitSize / 2, t);
+
+      ctx.save();
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = t.text;
+      ctx.font = `600 34px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+      const textX = innerX + portraitSize + 28;
+      const hasBook = state.book && state.book.trim().length > 0;
+      ctx.fillText(state.author || 'লেখকের নাম', textX, hasBook ? authorBlockY + portraitSize / 2 - 16 : authorBlockY + portraitSize / 2);
+
+      if (hasBook) {
+        ctx.fillStyle = t.accent;
+        ctx.font = `400 23px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+        ctx.fillText(state.book, textX, authorBlockY + portraitSize / 2 + 22);
+      }
+      ctx.restore();
+
+      // Divider line before footer
+      const footerRuleY = H - pad - 102;
+      ctx.beginPath();
+      ctx.moveTo(innerX, footerRuleY);
+      ctx.lineTo(W - innerX, footerRuleY);
+      ctx.strokeStyle = t.border;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Sphotik Footer
+      drawSphotikBrand(innerX, H - pad - 52, 'left', t);
+    }
+
+    // LAYOUT 2: Centerpiece Portrait (Portrait top-center, centered quote, centered author & brand)
+    function renderCenterpieceLayout(W, H, pad, t) {
+      const centerX = W / 2;
+      const maxTextW = W - (pad + 76) * 2;
+
+      // Top Author Portrait
+      const portraitSize = 156;
+      const portraitY = pad + 68;
+      drawAuthorPortrait(centerX - portraitSize / 2, portraitY, portraitSize, portraitSize / 2, t);
+
+      // Quote Text Centered
+      ctx.save();
+      ctx.fillStyle = t.text;
+      ctx.font = `500 ${state.fontSize}px "Noto Serif Bengali", "SphotikNotoBengali", "Fraunces", serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+
+      const lines = wrapText(ctx, `“${state.quote}”`, maxTextW);
+      const lineHeight = Math.round(state.fontSize * 1.52);
+      const totalQuoteH = lines.length * lineHeight;
+
+      const availableTop = portraitY + portraitSize + 48;
+      const availableBottom = H - pad - 240;
+      let startY = availableTop + Math.max(0, (availableBottom - availableTop - totalQuoteH) / 2);
+
+      for (const line of lines) {
+        ctx.fillText(line, centerX, startY);
+        startY += lineHeight;
+      }
+
+      // Author Name & Book Centered
+      const authorY = H - pad - 185;
+      ctx.fillStyle = t.accent;
+      ctx.font = `600 34px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+      ctx.fillText(`— ${state.author || 'লেখকের নাম'}`, centerX, authorY);
+
+      if (state.book && state.book.trim().length > 0) {
+        ctx.fillStyle = t.muted;
+        ctx.font = `400 22px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+        ctx.fillText(state.book, centerX, authorY + 44);
+      }
+      ctx.restore();
+
+      // Divider & Centered Brand
+      const footerRuleY = H - pad - 96;
+      ctx.beginPath();
+      ctx.moveTo(pad + 180, footerRuleY);
+      ctx.lineTo(W - pad - 180, footerRuleY);
+      ctx.strokeStyle = t.border;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      drawSphotikBrand(centerX, H - pad - 48, 'center', t);
+    }
+
+    // LAYOUT 3: Split Magazine Frame (Large rounded rectangular portrait card + editorial quote)
+    function renderMagazineLayout(W, H, pad, t) {
+      const innerX = pad + 56;
+      const footerRuleY = H - pad - 102;
+
+      // Left / Top-Right Large Portrait Frame
+      const imgW = 250;
+      const imgH = 300;
+      const imgX = W - innerX - imgW;
+      const imgY = pad + 64;
+      drawAuthorPortrait(imgX, imgY, imgW, 20, t);
+
+      // Top-left Kicker
+      ctx.save();
+      ctx.fillStyle = t.accent;
+      ctx.font = `600 20px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText('প্রিয় লেখকের উক্তি • SPHOTIK LIBRARY', innerX, pad + 68);
+
+      // Author Name & Book under kicker on top-left
+      ctx.fillStyle = t.text;
+      ctx.font = `700 42px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+      ctx.fillText(state.author || 'লেখকের নাম', innerX, pad + 115);
+
+      if (state.book && state.book.trim().length > 0) {
+        ctx.fillStyle = t.muted;
+        ctx.font = `400 24px "Noto Serif Bengali", "SphotikNotoBengali", serif`;
+        ctx.fillText(state.book, innerX, pad + 172);
+      }
+
+      // Accent short bar
+      ctx.fillStyle = t.accent;
+      ctx.fillRect(innerX, pad + 225, 72, 4);
+      ctx.restore();
+
+      // Quote in full width below the top header section
+      const quoteTopArea = imgY + imgH + 45;
+      const maxTextW = W - innerX * 2;
+      ctx.save();
+      ctx.fillStyle = t.text;
+      ctx.font = `500 ${state.fontSize}px "Noto Serif Bengali", "SphotikNotoBengali", "Fraunces", serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+
+      const lines = wrapText(ctx, `“${state.quote}”`, maxTextW);
+      const lineHeight = Math.round(state.fontSize * 1.5);
+      const totalQuoteH = lines.length * lineHeight;
+
+      let startY = quoteTopArea + Math.max(0, (footerRuleY - 30 - quoteTopArea - totalQuoteH) / 2);
+      for (const line of lines) {
+        ctx.fillText(line, innerX, startY);
+        startY += lineHeight;
+      }
+      ctx.restore();
+
+      // Footer
+      ctx.beginPath();
+      ctx.moveTo(innerX, footerRuleY);
+      ctx.lineTo(W - innerX, footerRuleY);
+      ctx.strokeStyle = t.border;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      drawSphotikBrand(innerX, H - pad - 52, 'left', t);
+    }
+
+    // Event Listeners
+    document.getElementById('quoteInput').addEventListener('input', (e) => {
+      state.quote = e.target.value;
+      renderCard();
+    });
+
+    document.getElementById('authorInput').addEventListener('input', (e) => {
+      state.author = e.target.value;
+      renderCard();
+    });
+
+    document.getElementById('bookInput').addEventListener('input', (e) => {
+      state.book = e.target.value;
+      renderCard();
+    });
+
+    document.getElementById('fontSizeInput').addEventListener('input', (e) => {
+      state.fontSize = Number(e.target.value);
+      document.getElementById('fontSizeVal').textContent = `${state.fontSize}px`;
+      renderCard();
+    });
+
+    document.getElementById('photoZoom').addEventListener('input', (e) => {
+      state.photoZoom = Number(e.target.value);
+      document.getElementById('zoomVal').textContent = `${state.photoZoom.toFixed(2)}x`;
+      renderCard();
+    });
+
+    document.getElementById('photoPanX').addEventListener('input', (e) => {
+      state.photoPanX = Number(e.target.value);
+      renderCard();
+    });
+
+    document.getElementById('photoPanY').addEventListener('input', (e) => {
+      state.photoPanY = Number(e.target.value);
+      renderCard();
+    });
+
+    // Upload Photo
+    document.getElementById('photoInput').addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          state.authorImage = img;
+          state.photoZoom = 1;
+          state.photoPanX = 0;
+          state.photoPanY = 0;
+          document.getElementById('photoZoom').value = '1';
+          document.getElementById('photoPanX').value = '0';
+          document.getElementById('photoPanY').value = '0';
+          document.getElementById('zoomVal').textContent = '1.0x';
+          renderCard();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('clearPhotoBtn').addEventListener('click', () => {
+      state.authorImage = null;
+      document.getElementById('photoInput').value = '';
+      renderCard();
+    });
+
+    // Preset Quote Chips
+    document.querySelectorAll('.preset-chip').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.quote = btn.dataset.quote;
+        state.author = btn.dataset.author;
+        state.book = btn.dataset.book;
+        document.getElementById('quoteInput').value = state.quote;
+        document.getElementById('authorInput').value = state.author;
+        document.getElementById('bookInput').value = state.book;
+        renderCard();
+      });
+    });
+
+    // Pill Buttons (Theme, Layout, Ratio, Filter)
+    function bindPillGroup(attr, stateKey) {
+      const buttons = document.querySelectorAll(`[data-${attr}]`);
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          buttons.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          state[stateKey] = btn.getAttribute(`data-${attr}`);
+          renderCard();
+        });
+      });
+    }
+
+    bindPillGroup('theme', 'theme');
+    bindPillGroup('layout', 'layout');
+    bindPillGroup('ratio', 'ratio');
+    bindPillGroup('filter', 'photoFilter');
+
+    // Download High-Res JPEG
+    document.getElementById('downloadJpgBtn').addEventListener('click', () => {
+      renderCard();
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.98);
+      const link = document.createElement('a');
+      const cleanAuthor = (state.author || 'author')
+        .trim()
+        .replace(/\s+/g, '-')
+        .slice(0, 30);
+      link.download = `sphotik-quote-${cleanAuthor}-${Date.now()}.jpg`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // Re-render once web fonts are ready
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => renderCard());
+    }
+    window.addEventListener('load', () => renderCard());
+  </script>
+</body>
+</html>
