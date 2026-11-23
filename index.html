@@ -288,6 +288,41 @@
       cursor: pointer;
     }
 
+    .font-size-controls {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr 1fr;
+      gap: 0.35rem;
+      margin-top: 0.2rem;
+    }
+
+    .font-step-btn {
+      padding: 0.28rem 0.4rem;
+      border: 1px solid var(--border);
+      background: #fafbfa;
+      border-radius: 6px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .font-step-btn:hover:not(:disabled) {
+      border-color: var(--forest);
+      color: var(--forest);
+      background: #f1f6f3;
+    }
+
+    .font-step-btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .font-step-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
     /* Action Buttons */
     .actions {
       display: flex;
@@ -523,6 +558,11 @@
           <div class="slider-group">
             <span>উক্তির ফন্ট সাইজ <strong id="fontSizeVal">54px</strong></span>
             <input type="range" id="fontSizeInput" min="32" max="82" step="2" value="54" />
+            <div class="font-size-controls">
+              <button type="button" id="fontSizeDecBtn" class="font-step-btn" title="ফন্ট ছোট করুন">A-</button>
+              <button type="button" id="fontSizeResetBtn" class="font-step-btn" title="ডিফল্ট ফন্ট সাইজ (54px)" disabled>Default</button>
+              <button type="button" id="fontSizeIncBtn" class="font-step-btn" title="ফন্ট বড় করুন">A+</button>
+            </div>
           </div>
           <div class="slider-group">
             <span>কার্ডের অনুপাত (Ratio)</span>
@@ -1017,10 +1057,40 @@
       renderCard();
     });
 
-    document.getElementById('fontSizeInput').addEventListener('input', (e) => {
-      state.fontSize = Number(e.target.value);
-      document.getElementById('fontSizeVal').textContent = `${state.fontSize}px`;
+    const DEFAULT_FONT_SIZE = 54;
+    const fontSizeInput = document.getElementById('fontSizeInput');
+    const fontSizeVal = document.getElementById('fontSizeVal');
+    const fontSizeDecBtn = document.getElementById('fontSizeDecBtn');
+    const fontSizeResetBtn = document.getElementById('fontSizeResetBtn');
+    const fontSizeIncBtn = document.getElementById('fontSizeIncBtn');
+
+    function updateFontSize(nextSize) {
+      const min = Number(fontSizeInput.min);
+      const max = Number(fontSizeInput.max);
+      const clamped = Math.min(max, Math.max(min, nextSize));
+      state.fontSize = clamped;
+      fontSizeInput.value = String(clamped);
+      fontSizeVal.textContent = `${clamped}px`;
+      fontSizeDecBtn.disabled = clamped <= min;
+      fontSizeIncBtn.disabled = clamped >= max;
+      fontSizeResetBtn.disabled = clamped === DEFAULT_FONT_SIZE;
       renderCard();
+    }
+
+    fontSizeInput.addEventListener('input', (e) => {
+      updateFontSize(Number(e.target.value));
+    });
+
+    fontSizeDecBtn.addEventListener('click', () => {
+      updateFontSize(state.fontSize - Number(fontSizeInput.step || 2));
+    });
+
+    fontSizeIncBtn.addEventListener('click', () => {
+      updateFontSize(state.fontSize + Number(fontSizeInput.step || 2));
+    });
+
+    fontSizeResetBtn.addEventListener('click', () => {
+      updateFontSize(DEFAULT_FONT_SIZE);
     });
 
     document.getElementById('photoZoom').addEventListener('input', (e) => {
